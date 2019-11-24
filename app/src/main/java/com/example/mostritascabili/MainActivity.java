@@ -3,7 +3,9 @@ package com.example.mostritascabili;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -36,9 +38,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Mapbox.getInstance(this, "pk.eyJ1IjoiZnJlc2hnaWFtbWkiLCJhIjoiY2szOHpjcjgzMGNweDNubmN0OGpzN2NmdiJ9.WR7W60fkc9bJEZx1pAlrJw");
         setContentView(R.layout.activity_main);
+
+        // Acquire session_id for future references
+        final SharedPreferences storedSessionID = getSharedPreferences("session_id", MODE_PRIVATE);
+        final String session_id = storedSessionID.getString("session_id", null);
+
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
@@ -54,10 +60,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .tilt(10)
                         .build();
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 1000);
-                Snackbar.make(view, "Camera centered!", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Toast.makeText(getApplicationContext(), "Camera centered!", Toast.LENGTH_SHORT).show();
             }
-
         });
     }
 
@@ -176,4 +180,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
     }
+
 }

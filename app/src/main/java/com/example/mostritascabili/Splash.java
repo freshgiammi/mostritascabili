@@ -1,10 +1,17 @@
 package com.example.mostritascabili;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Window;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,52 +28,87 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+//Todo: Check if user is connected to the internet, and move permissions logic here
 public class Splash extends AppCompatActivity {
-
     final String url = "https://ewserver.di.unimi.it/mobicomp/mostri/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent(this, MainActivity.class);
 
-        //Todo: Add database data, populate model, then pivot to MainActivity
+        // Create sharedPrefs to store session_id.
+        final SharedPreferences storedSessionID = getSharedPreferences("session_id", MODE_PRIVATE);
+        String session_id = storedSessionID.getString("session_id",null);
 
-        //Todo: Check if user is connected to the internet, and move permissions logic here
-
-        //Todo: Check database, if we already have a session_id then DO NOT FETCH THIS.
+        // Set up RequestQueue for session_id, profile data and map objects.
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest getSessionID = new JsonObjectRequest(
-                Request.Method.POST,
-                url+"register.php",
-                null,
-                new Response.Listener<JSONObject>(){
-                    @Override
-                    public void onResponse(JSONObject response){
-                        Log.d("getSessionID", "Correct: " + response.toString());
 
-                        //Extract session_id
-                        String session_id = null;
-                        try {
-                            session_id = response.getString("session_id");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+        // If session_id is null, fetch a new one.
+        if (session_id == null){
+            JsonObjectRequest getSessionID = new JsonObjectRequest(
+                    Request.Method.POST,
+                    url+"register.php",
+                    null,
+                    new Response.Listener<JSONObject>(){
+                        @Override
+                        public void onResponse(JSONObject response){
+                            Log.d("getSessionID", "register.php response: " + response.toString());
+
+                            //Extract session_id
+                            String session_id = null;
+                            try {
+                                session_id = response.getString("session_id");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            //Save session_id inside SharedPreferences
+                            SharedPreferences.Editor editor = storedSessionID.edit();
+                            editor.putString("session_id",session_id);
+                            editor.commit();
+
+                            //Todo: WORKAROUND: Create an interface that work with callback methods
+
+                            // Feed response to getProfile and getMapObjects
+                            getProfile(response);
+                            getMapObjects(response);
                         }
-                        Log.d("getSessionID", session_id);
+                    }, new Response.ErrorListener(){
+                @Override
+                public void onErrorResponse(VolleyError error){
+                    Log.d("getSessionID", "Error: " + error.toString());
+                }
+            });
+            queue.add(getSessionID);
+        } else {
+            Log.d("SharedPrefs","session_id found: "+session_id+". Not requesting new one.");
 
-                        //Todo: WORKAROUND: Create an interface that work with callback methods
-                        getProfile(response);
-                        getMapObjects(response);
-
-                    }
-                }, new Response.ErrorListener(){
-            @Override
-            public void onErrorResponse(VolleyError error){
-                Log.d("getSessionID", "Error: " + error.toString());
+            //Create JSONObject
+            JSONObject sessionIdObject= new JSONObject();
+            try {
+                sessionIdObject.put("session_id",session_id);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        });
-        queue.add(getSessionID);
+            getProfile(sessionIdObject);
+            getMapObjects(sessionIdObject);
+        }
+
+        //Todo: check that we actually have finished populating models.
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                startActivity(intent);
+                finish();
+            }
+
+        }, 2000); // 5000ms delay
+
     }
 
     //Fetch profile based on session_id
@@ -79,7 +121,7 @@ public class Splash extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("getProfile", "Correct: " + response.toString());
+                        Log.d("getProfile", "getprofile.php response: " + response.toString());
                         ProfileModel.getInstance().populate(response);
                     }
                 }, new Response.ErrorListener() {
@@ -101,7 +143,7 @@ public class Splash extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("getMapObjects", "Correct: " + response.toString());
+                        Log.d("getMapObjects", "getmap.php response: " + response.toString());
                         MapObjectModel.getInstance().populate(response);
                     }
                 }, new Response.ErrorListener() {
@@ -112,4 +154,6 @@ public class Splash extends AppCompatActivity {
         });
         queue.add(mapObject);
     }
+
+
 }

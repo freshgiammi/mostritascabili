@@ -20,7 +20,7 @@ public class ProfileModel{
                 Gson gson = new Gson();
 
                 Profile userData = gson.fromJson(response.toString(), Profile.class);
-                Log.d("Volley", user.toString());
+                Log.d("ProfileModel", "Populating model with: "+userData.toString());
                 user.add(userData);
         }
         catch (Exception ex){
