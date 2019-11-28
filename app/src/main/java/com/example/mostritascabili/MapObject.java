@@ -1,6 +1,5 @@
 package com.example.mostritascabili;
 
-
 public class MapObject {
     int id;
     double lat;

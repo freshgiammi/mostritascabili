@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -60,12 +59,14 @@ public class Splash extends AppCompatActivity {
                         @Override
                         public void onSuccess(JSONObject response) {
                         ProfileModel.getInstance().populate(response);
-                        }
-                    });
-                    NetworkRequestHandler.getMapObjects(Splash.this, response, new ServerCallback() {
-                        @Override
-                        public void onSuccess(JSONObject response) {
-
+                            NetworkRequestHandler.getMapObjects(Splash.this, response, new ServerCallback() {
+                                @Override
+                                public void onSuccess(JSONObject response) {
+                                    MapObjectModel.getInstance().populate(response);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
                         }
                     });
                 }
@@ -74,42 +75,29 @@ public class Splash extends AppCompatActivity {
                 Log.d("Splash", "SharedPreferences: session_id found: " + session_id + ". Not requesting new one.");
 
                 //Create JSONObject
-                JSONObject sessionIdObject = new JSONObject();
+                final JSONObject sessionIdObject = new JSONObject();
                 try {
                     sessionIdObject.put("session_id", session_id);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-                //Fetch profile and mapObjects
-                // Feed response to getProfile and getMapObjects
+                // Fetch profile and mapObject
                 NetworkRequestHandler.getProfile(this, sessionIdObject, new ServerCallback() {
                     @Override
                     public void onSuccess(JSONObject response) {
-                        ProfileModel.getInstance().populate(response);
-                    }
-                });
-                NetworkRequestHandler.getMapObjects(this, sessionIdObject, new ServerCallback() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-
+                    ProfileModel.getInstance().populate(response);
+                    NetworkRequestHandler.getMapObjects(Splash.this, sessionIdObject, new ServerCallback() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            MapObjectModel.getInstance().populate(response);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
                     }
                 });
             }
-
-            //Todo: check that we actually have finished populating models.
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    startActivity(intent);
-                    finish();
-                }
-
-            }, 2000); // 2000ms delay
-
         }
     }
-
 }

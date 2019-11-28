@@ -17,6 +17,7 @@ import org.json.JSONObject;
 public class NetworkRequestHandler {
 
     //Check whether we have internet connection or not.
+    //Todo: find out how to use ConnectivityManager.NetworkCallback
     public static boolean isConnected(Context context){
       ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -47,6 +48,7 @@ public class NetworkRequestHandler {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("NetworkRequestHandler", "getMapObjectsError: " + error.toString());
+                error.printStackTrace();
             }
         });
         queue.add(mapObject);
@@ -71,6 +73,7 @@ public class NetworkRequestHandler {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("NetworkRequestHandler", "getProfile Error: " + error.toString());
+                error.printStackTrace();
             }
         });
         queue.add(profile);
@@ -95,6 +98,7 @@ public class NetworkRequestHandler {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("NetworkRequestHandler", "getSessionID Error: " + error.toString());
+                error.printStackTrace();
             }
         });
         queue.add(profile);
