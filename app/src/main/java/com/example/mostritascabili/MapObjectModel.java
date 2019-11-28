@@ -25,7 +25,7 @@ public class MapObjectModel{
                 Gson gson = new Gson();
 
                 MapObject mapObjectData = gson.fromJson(current.toString(), MapObject.class);
-                Log.d("MapObjectModel.populate", mapObjectData.toString());
+                Log.d("MapObjectModel", "Populating model with: "+mapObjectData.toString());
                 mapObject.add(mapObjectData);
             }
         } catch (Exception ex){

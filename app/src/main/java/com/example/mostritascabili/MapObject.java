@@ -1,6 +1,5 @@
 package com.example.mostritascabili;
 
-import android.util.Base64;
 
 public class MapObject {
     int id;
@@ -9,16 +8,14 @@ public class MapObject {
     String type;
     String size;
     String name;
-    String img;
 
-    public MapObject(int id, double lat, double lon, String type, String size, String name, String img) {
+    public MapObject(int id, double lat, double lon, String type, String size, String name) {
         this.id = id;
         this.lat = lat;
         this.lon = lon;
         this.type = type;
         this.size = size;
         this.name = name;
-        this.img = img;
     }
 
     public int getId() {
@@ -69,14 +66,6 @@ public class MapObject {
         this.name = name;
     }
 
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
     @Override
     public String toString() {
         return "MapObject{" +
@@ -86,7 +75,6 @@ public class MapObject {
                 ", type='" + type + '\'' +
                 ", size='" + size + '\'' +
                 ", name='" + name + '\'' +
-                ", img='" + img + '\'' +
                 '}';
     }
 }

@@ -40,13 +40,13 @@ public class NetworkRequestHandler {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("getMapObjects", "getmap.php response: " + response.toString());
+                        Log.d("NetworkRequestHandler", "getmap.php response: " + response.toString());
                         callback.onSuccess(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("getMapObjects", "Error: " + error.toString());
+                Log.d("NetworkRequestHandler", "getMapObjectsError: " + error.toString());
             }
         });
         queue.add(mapObject);
@@ -64,18 +64,19 @@ public class NetworkRequestHandler {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("getProfile", "getprofile.php response: " + response.toString());
+                        Log.d("NetworkRequestHandler", "getprofile.php response: " + response.toString());
                         callback.onSuccess(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("getProfile", "Error: " + error.toString());
+                Log.d("NetworkRequestHandler", "getProfile Error: " + error.toString());
             }
         });
         queue.add(profile);
     }
 
+    // Fetch Session ID
     public static void getSessionID(Context context, final ServerCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
         Log.d("NetworkRequestHandler", "getSessionID: Initialized");
@@ -87,13 +88,13 @@ public class NetworkRequestHandler {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("getProfile", "register.php response: " + response.toString());
+                        Log.d("NetworkRequestHandler", "register.php response: " + response.toString());
                         callback.onSuccess(response);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("getProfile", "Error: " + error.toString());
+                Log.d("NetworkRequestHandler", "getSessionID Error: " + error.toString());
             }
         });
         queue.add(profile);

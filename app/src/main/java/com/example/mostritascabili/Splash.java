@@ -14,7 +14,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Splash extends AppCompatActivity {
-    final String url = "https://ewserver.di.unimi.it/mobicomp/mostri/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,7 @@ public class Splash extends AppCompatActivity {
                 }
             });
             } else {
-                Log.d("SharedPrefs", "session_id found: " + session_id + ". Not requesting new one.");
+                Log.d("Splash", "SharedPreferences: session_id found: " + session_id + ". Not requesting new one.");
 
                 //Create JSONObject
                 JSONObject sessionIdObject = new JSONObject();
