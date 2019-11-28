@@ -1,0 +1,104 @@
+package com.example.mostritascabili;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+
+public class NetworkRequestHandler {
+
+    //Check whether we have internet connection or not.
+    public static boolean isConnected(Context context){
+      ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        final boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        return isConnected;
+    }
+
+    // Fetch Map Objects
+    public static void getMapObjects(Context context, final JSONObject param, final ServerCallback callback){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        Log.d("NetworkRequestHandler", "getMapObjects: Initialized");
+
+        JsonObjectRequest mapObject = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://ewserver.di.unimi.it/mobicomp/mostri/getmap.php",
+                param,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("getMapObjects", "getmap.php response: " + response.toString());
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("getMapObjects", "Error: " + error.toString());
+            }
+        });
+        queue.add(mapObject);
+    }
+
+    // Fetch profile info
+    public static void getProfile(Context context, JSONObject response, final ServerCallback callback) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+        Log.d("NetworkRequestHandler", "getProfile: Initialized");
+
+        JsonObjectRequest profile = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://ewserver.di.unimi.it/mobicomp/mostri/getprofile.php",
+                response,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("getProfile", "getprofile.php response: " + response.toString());
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("getProfile", "Error: " + error.toString());
+            }
+        });
+        queue.add(profile);
+    }
+
+    public static void getSessionID(Context context, final ServerCallback callback) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+        Log.d("NetworkRequestHandler", "getSessionID: Initialized");
+
+        JsonObjectRequest profile = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://ewserver.di.unimi.it/mobicomp/mostri/register.php",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("getProfile", "register.php response: " + response.toString());
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("getProfile", "Error: " + error.toString());
+            }
+        });
+        queue.add(profile);
+    }
+
+}
+
+

@@ -5,12 +5,10 @@ import androidx.annotation.NonNull;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -83,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 centerFAB.show();
             }
         });
-
     }
 
     /* Display user location icon */
@@ -106,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             locationComponent.zoomWhileTracking(15);
             locationComponent.tiltWhileTracking(10);
             centerFAB.hide();
-
         } else {
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this);
