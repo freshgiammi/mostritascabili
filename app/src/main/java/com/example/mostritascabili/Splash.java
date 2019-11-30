@@ -24,7 +24,7 @@ public class Splash extends AppCompatActivity {
         final SharedPreferences storedSessionID = getSharedPreferences("session_id", MODE_PRIVATE);
         String session_id = storedSessionID.getString("session_id", null);
 
-        if (NetworkRequestHandler.isConnected(this) == false) {
+        if (!NetworkRequestHandler.isConnected(this)) {
             new AlertDialog.Builder(Splash.this)
                     .setTitle("Non sei connesso alla rete!")
                     .setMessage("Ci dispiace, ma per utilizzare Mostri Tascabili, abbiamo bisogno che tu sia connesso ad una rete! (Wifi o mobile)")
