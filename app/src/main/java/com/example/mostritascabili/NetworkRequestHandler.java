@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class NetworkRequestHandler {
@@ -55,14 +56,14 @@ public class NetworkRequestHandler {
     }
 
     // Fetch profile info
-    public static void getProfile(Context context, JSONObject response, final ServerCallback callback) {
+    public static void getProfile(Context context, JSONObject param, final ServerCallback callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
         Log.d("NetworkRequestHandler", "getProfile: Initialized");
 
         JsonObjectRequest profile = new JsonObjectRequest(
                 Request.Method.POST,
                 "https://ewserver.di.unimi.it/mobicomp/mostri/getprofile.php",
-                response,
+                param,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -103,6 +104,32 @@ public class NetworkRequestHandler {
         });
         queue.add(profile);
     }
+
+    // Fetch mapObject img, returns Base64 img (as JSONObject, string)
+    public static void getObjectImg(Context context, final JSONObject param, final ServerCallback callback){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        Log.d("NetworkRequestHandler", "getObjectImg: Initialized");
+
+        JsonObjectRequest mapObject = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://ewserver.di.unimi.it/mobicomp/mostri/getimage.php",
+                param,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("NetworkRequestHandler", "getimage.php response: " + response.toString());
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("NetworkRequestHandler", "getObjectImg Error: " + error.toString());
+                error.printStackTrace();
+            }
+        });
+        queue.add(mapObject);
+    }
+
 
 }
 

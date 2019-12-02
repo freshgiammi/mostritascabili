@@ -3,13 +3,15 @@ package com.example.mostritascabili;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
-
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
@@ -25,15 +27,22 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
-
+import com.mapbox.mapboxsdk.plugins.annotation.OnSymbolClickListener;
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, PermissionsListener {
+public class MainActivity extends AppCompatActivity implements Style.OnStyleLoaded, OnMapReadyCallback, PermissionsListener {
 
     private PermissionsManager permissionsManager;
     private MapView mapView;
     private MapboxMap mapboxMap;
     private FloatingActionButton centerFAB;
+    private String session_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Acquire session_id for future references
         final SharedPreferences storedSessionID = getSharedPreferences("session_id", MODE_PRIVATE);
-        final String session_id = storedSessionID.getString("session_id", null);
+        session_id= storedSessionID.getString("session_id", null);
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -61,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .build();
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 1000);
                 Toast.makeText(getApplicationContext(), "Camera centered!", Toast.LENGTH_SHORT).show();
+                centerFAB.hide();
             }
         });
     }
@@ -68,21 +78,74 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         MainActivity.this.mapboxMap = mapboxMap;
-
-        mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/mapbox/streets-v10"),
-                new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
-                        enableLocationComponent(style);
-                    }
-                });
+        mapboxMap.setStyle(Style.LIGHT,this);
 
         mapboxMap.addOnCameraMoveListener(new MapboxMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
-                centerFAB.show();
+                CameraPosition cameraPosition =  mapboxMap.getCameraPosition();
+                    centerFAB.show();
             }
         });
+    }
+
+    @Override
+    public void onStyleLoaded(@NonNull Style style) {
+        enableLocationComponent(style);
+        final SymbolManager symbolManager = new SymbolManager(mapView, mapboxMap, style);
+        symbolManager.setIconAllowOverlap(true);
+        symbolManager.setIconIgnorePlacement(true);
+
+        mapboxMap.getStyle().addImage("donut", BitmapFactory.decodeResource(getResources(), R.drawable.donut));
+        mapboxMap.getStyle().addImage("lollipop", BitmapFactory.decodeResource(getResources(), R.drawable.lollipop));
+        mapboxMap.getStyle().addImage("candy", BitmapFactory.decodeResource(getResources(), R.drawable.candy));
+        mapboxMap.getStyle().addImage("dragon", BitmapFactory.decodeResource(getResources(), R.drawable.dragon));
+        mapboxMap.getStyle().addImage("goblin", BitmapFactory.decodeResource(getResources(), R.drawable.goblin));
+        mapboxMap.getStyle().addImage("cthulhu", BitmapFactory.decodeResource(getResources(), R.drawable.cthulhu));
+
+        ArrayList<MapObject> mapObjects = MapObjectModel.getInstance().getMapObjects();
+        for( MapObject obj : mapObjects) {
+            final MapObject currentObj = obj;
+            String symbolIcon = null;
+            switch(obj.getType()) {
+                case "MO":
+                    switch(obj.getSize()) {
+                        case "S":
+                            symbolIcon = "goblin";
+                            break;
+                        case "M":
+                            symbolIcon = "dragon";
+                            break;
+                        case "L":
+                            symbolIcon = "cthulhu";
+                            break;
+                    }
+                    break;
+                case "CA":
+                    switch(obj.getSize()) {
+                        case "S":
+                            symbolIcon = "candy";
+                            break;
+                        case "M":
+                            symbolIcon = "lollipop";
+                            break;
+                        case "L":
+                            symbolIcon = "donut";
+                            break;
+                    }
+                    break;
+            }
+            symbolManager.create(new SymbolOptions()
+                    .withLatLng(new LatLng(obj.getLat(), obj.getLon()))
+                    .withIconImage(symbolIcon)
+                    .withIconSize(0.09f));
+            symbolManager.addClickListener(new OnSymbolClickListener() {
+                @Override
+                public void onAnnotationClick(Symbol symbol) {
+                    Toast.makeText(MainActivity.this, currentObj.name.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     /* Display user location icon */
@@ -104,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             locationComponent.setRenderMode(RenderMode.COMPASS);
             locationComponent.zoomWhileTracking(15);
             locationComponent.tiltWhileTracking(10);
-            centerFAB.hide();
         } else {
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this);
@@ -134,6 +196,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, "We need access to your location in order to work!", Toast.LENGTH_LONG).show();
             finish();
         }
+    }
+
+
+    // Creates request for object img, to be incapsulated inside request as param
+    public JSONObject objectImgRequest(String id) {
+        final JSONObject imgReqeust = new JSONObject();
+        try {
+            imgReqeust.put("session_id", session_id);
+            imgReqeust.put("id",id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return imgReqeust;
     }
 
     @Override
