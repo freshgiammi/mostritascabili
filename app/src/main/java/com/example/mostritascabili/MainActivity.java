@@ -70,28 +70,47 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                         .build();
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 1000);
                 Toast.makeText(getApplicationContext(), "Camera centered!", Toast.LENGTH_SHORT).show();
-                centerFAB.hide();
+
+                //Make FAB disappear after 1000ms, exactly when the animation stops running to avoid conflicts with CameraMoveListener
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        centerFAB.hide();
+                    }
+                }, 1000);
             }
         });
+
     }
 
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         MainActivity.this.mapboxMap = mapboxMap;
         mapboxMap.setStyle(Style.LIGHT,this);
-
-        mapboxMap.addOnCameraMoveListener(new MapboxMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                CameraPosition cameraPosition =  mapboxMap.getCameraPosition();
-                    centerFAB.show();
-            }
-        });
     }
 
     @Override
     public void onStyleLoaded(@NonNull Style style) {
         enableLocationComponent(style);
+
+        //Show centerFAB if camera isn't centered
+        mapboxMap.addOnCameraMoveStartedListener(new MapboxMap.OnCameraMoveStartedListener() {
+            @Override
+            public void onCameraMoveStarted(int reason) {
+                CameraPosition cameraPosition = mapboxMap.getCameraPosition();
+                if (cameraPosition.target.getLatitude() != 0){
+                    CameraPosition position = new CameraPosition.Builder()
+                            .target(new LatLng(mapboxMap.getLocationComponent().getLastKnownLocation().getLatitude(), mapboxMap.getLocationComponent().getLastKnownLocation().getLongitude()))
+                            .zoom(15)
+                            .tilt(10)
+                            .build();
+                    if (!cameraPosition.equals(position))
+                        centerFAB.show();
+                }
+            }
+        });
+
         final SymbolManager symbolManager = new SymbolManager(mapView, mapboxMap, style);
         symbolManager.setIconAllowOverlap(true);
         symbolManager.setIconIgnorePlacement(true);
@@ -147,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         symbolManager.addClickListener(new OnSymbolClickListener() {
             @Override
             public void onAnnotationClick(Symbol symbol) {
+                //Todo: Create fight/eat method, adapt to symbol.getData()
                 Log.d("Symbol",symbol.toString());
                 Toast.makeText(MainActivity.this, symbol.getData().toString(), Toast.LENGTH_SHORT).show();
             }
