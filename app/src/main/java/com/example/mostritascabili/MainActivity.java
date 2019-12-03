@@ -105,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
 
         ArrayList<MapObject> mapObjects = MapObjectModel.getInstance().getMapObjects();
         for( MapObject obj : mapObjects) {
-            final MapObject currentObj = obj;
             String symbolIcon = null;
             switch(obj.getType()) {
                 case "MO":
@@ -135,17 +134,23 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                     }
                     break;
             }
-            symbolManager.create(new SymbolOptions()
-                    .withLatLng(new LatLng(obj.getLat(), obj.getLon()))
-                    .withIconImage(symbolIcon)
-                    .withIconSize(0.09f));
-            symbolManager.addClickListener(new OnSymbolClickListener() {
-                @Override
-                public void onAnnotationClick(Symbol symbol) {
-                    Toast.makeText(MainActivity.this, currentObj.name.toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            try {
+                symbolManager.create(new SymbolOptions()
+                        .withLatLng(new LatLng(obj.getLat(), obj.getLon()))
+                        .withIconImage(symbolIcon)
+                        .withIconSize(0.09f)
+                        .withData(MapObjectModel.getInstance().mapObjectJSON(obj)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
+        symbolManager.addClickListener(new OnSymbolClickListener() {
+            @Override
+            public void onAnnotationClick(Symbol symbol) {
+                Log.d("Symbol",symbol.toString());
+                Toast.makeText(MainActivity.this, symbol.getData().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /* Display user location icon */
