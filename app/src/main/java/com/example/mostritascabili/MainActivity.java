@@ -4,13 +4,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.OnApplyWindowInsetsListener;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -79,8 +75,8 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         //WORKAROUND: Edge to edge doesn't work well with MapBox, fake it with transparency and a white navbar.
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.carbon));
 
-        // Manage BottomAppBar and fragmets
-        BottomAppBar bar = (BottomAppBar) findViewById(R.id.bar);
+        // Manage BottomAppBar and fragments
+        BottomAppBar bar = findViewById(R.id.bar);
         setSupportActionBar(bar);
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,8 +99,12 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         centerFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                double lat = mapboxMap.getLocationComponent().getLastKnownLocation().getLatitude();
-                double lon = mapboxMap.getLocationComponent().getLastKnownLocation().getLongitude();
+                double lat = 0;
+                double lon = 0;
+                if (mapboxMap.getLocationComponent().getLastKnownLocation() != null) {
+                    lat = mapboxMap.getLocationComponent().getLastKnownLocation().getLatitude();
+                    lon = mapboxMap.getLocationComponent().getLastKnownLocation().getLongitude();
+                }
                 CameraPosition position = new CameraPosition.Builder()
                         .target(new LatLng(lat, lon))
                         .zoom(15)
@@ -136,18 +136,21 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         enableLocationComponent(style);
 
         //Show centerFAB if camera isn't centered
-        //Todo: this logic fails when rotating screen, mapboxMap gets cleared.
         mapboxMap.addOnCameraMoveStartedListener(new MapboxMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int reason) {
-                Log.d("onCameraMoveStarted", "im baby");
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+                CameraPosition cameraPosition = mapboxMap.getCameraPosition();
+                // mapboxMap can't hold his shit when rotated. To avoid NPE crashes,
+                // check against mapboxMap.getLocationComponent().getLastKnownLocation()
+                if (cameraPosition.target.getLatitude() != 0 && mapboxMap.getLocationComponent().getLastKnownLocation() != null){
+                    CameraPosition position = new CameraPosition.Builder()
+                            .target(new LatLng(mapboxMap.getLocationComponent().getLastKnownLocation().getLatitude(), mapboxMap.getLocationComponent().getLastKnownLocation().getLongitude()))
+                            .zoom(15)
+                            .tilt(10)
+                            .build();
+                    if (!cameraPosition.equals(position))
                         centerFAB.show();
-                    }
-                }, 1500);
+                }
             }
         });
 
