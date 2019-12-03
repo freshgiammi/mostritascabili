@@ -1,5 +1,10 @@
 package com.example.mostritascabili;
 
+/**
+ * MapObject
+ * Creates a mapObject object. Used to handle mobs.
+ */
+
 public class MapObject {
     int id;
     double lat;

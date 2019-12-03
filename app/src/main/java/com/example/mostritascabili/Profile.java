@@ -1,6 +1,9 @@
 package com.example.mostritascabili;
 
-import android.util.Base64;
+/**
+ * Profile
+ * Creates a Profile objects. Used to handle user data.
+ */
 
 public class Profile {
     String username;

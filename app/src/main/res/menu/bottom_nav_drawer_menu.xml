@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+
+
+        <item
+            android:id="@+id/user"
+            android:icon="@drawable/ic_person_outline_black_24dp"
+            android:title="Utente" />
+        <item
+            android:id="@+id/leaderboard"
+            android:icon="@drawable/ic_insert_chart_black_24dp"
+            android:title="Classifica" />
+    </group>
+</menu>

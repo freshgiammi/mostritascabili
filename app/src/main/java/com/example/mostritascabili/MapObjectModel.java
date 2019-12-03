@@ -9,6 +9,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 
+/**
+ * MapObjectModel
+ * Model that holds every mapObject to be displayed into the map.
+ * Gets updated frequently.
+ */
+
 public class MapObjectModel{
     private static final MapObjectModel ourInstance = new MapObjectModel();
     private ArrayList<MapObject> mapObject;

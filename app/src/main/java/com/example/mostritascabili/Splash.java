@@ -12,6 +12,11 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Splash
+ * Used to load all data before entering the MainActivity.
+ */
+
 public class Splash extends AppCompatActivity {
 
     @Override

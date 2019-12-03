@@ -5,6 +5,11 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 import java.util.ArrayList;
 
+/**
+ * ProfileModel
+ * Model for Profile. Holds only the user profile.
+ */
+
 public class ProfileModel{
     private static final ProfileModel ourInstance = new ProfileModel();
     private ArrayList<Profile> user;

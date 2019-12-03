@@ -3,15 +3,20 @@ package com.example.mostritascabili;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
@@ -36,6 +41,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MainActivity
+ * Holds the main activity of Mostri Tascabili.
+ */
+
 public class MainActivity extends AppCompatActivity implements Style.OnStyleLoaded, OnMapReadyCallback, PermissionsListener {
 
     private PermissionsManager permissionsManager;
@@ -50,9 +60,41 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         Mapbox.getInstance(this, "pk.eyJ1IjoiZnJlc2hnaWFtbWkiLCJhIjoiY2szOHpjcjgzMGNweDNubmN0OGpzN2NmdiJ9.WR7W60fkc9bJEZx1pAlrJw");
         setContentView(R.layout.activity_main);
 
+
+        // UI INITIALIZATION
+
+        //Used for Edge-to-Edge gestures
+        /*
+        final View decorView = findViewById(R.id.coordinatorLayout);
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        ViewCompat.setOnApplyWindowInsetsListener(decorView, new OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+                v.setPadding(0,0,0,insets.getSystemWindowInsetBottom());
+                return insets.consumeSystemWindowInsets();
+            }
+        });
+        */
+
+        //WORKAROUND: Edge to edge doesn't work well with MapBox, fake it with transparency and a white navbar.
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.carbon));
+
+        // Manage BottomAppBar and fragmets
+        BottomAppBar bar = (BottomAppBar) findViewById(R.id.bar);
+        setSupportActionBar(bar);
+        bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomNavigationDrawerFragment bottomNavigationDrawerFragment = new BottomNavigationDrawerFragment();
+                bottomNavigationDrawerFragment.show(getSupportFragmentManager(), bottomNavigationDrawerFragment.getTag());
+            }
+        });
+
+        // ENDING UI INITIALIZATION
+
         // Acquire session_id for future references
         final SharedPreferences storedSessionID = getSharedPreferences("session_id", MODE_PRIVATE);
-        session_id= storedSessionID.getString("session_id", null);
+        session_id = storedSessionID.getString("session_id", null);
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -81,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                 }, 1000);
             }
         });
-
     }
 
     @Override
@@ -95,19 +136,18 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         enableLocationComponent(style);
 
         //Show centerFAB if camera isn't centered
+        //Todo: this logic fails when rotating screen, mapboxMap gets cleared.
         mapboxMap.addOnCameraMoveStartedListener(new MapboxMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int reason) {
-                CameraPosition cameraPosition = mapboxMap.getCameraPosition();
-                if (cameraPosition.target.getLatitude() != 0){
-                    CameraPosition position = new CameraPosition.Builder()
-                            .target(new LatLng(mapboxMap.getLocationComponent().getLastKnownLocation().getLatitude(), mapboxMap.getLocationComponent().getLastKnownLocation().getLongitude()))
-                            .zoom(15)
-                            .tilt(10)
-                            .build();
-                    if (!cameraPosition.equals(position))
+                Log.d("onCameraMoveStarted", "im baby");
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
                         centerFAB.show();
-                }
+                    }
+                }, 1500);
             }
         });
 
