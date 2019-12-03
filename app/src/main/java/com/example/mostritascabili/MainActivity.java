@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
     private MapboxMap mapboxMap;
     private FloatingActionButton centerFAB;
     private String session_id;
+    private JSONObject sessionIdObject;
+    private Integer updaterInterval = 300000; // 5 Minutes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +90,16 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
 
         // ENDING UI INITIALIZATION
 
-        // Acquire session_id for future references
+        // Acquire session_id for future references and update sessionIdObject
         final SharedPreferences storedSessionID = getSharedPreferences("session_id", MODE_PRIVATE);
         session_id = storedSessionID.getString("session_id", null);
+        JSONObject sessionIdObject = new JSONObject();
+        try {
+            sessionIdObject.put("session_id", session_id);
+            MainActivity.this.sessionIdObject = sessionIdObject;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -154,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
             }
         });
 
+        //Put symbols on the map
         final SymbolManager symbolManager = new SymbolManager(mapView, mapboxMap, style);
         symbolManager.setIconAllowOverlap(true);
         symbolManager.setIconIgnorePlacement(true);
@@ -165,55 +175,38 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         mapboxMap.getStyle().addImage("goblin", BitmapFactory.decodeResource(getResources(), R.drawable.goblin));
         mapboxMap.getStyle().addImage("cthulhu", BitmapFactory.decodeResource(getResources(), R.drawable.cthulhu));
 
-        ArrayList<MapObject> mapObjects = MapObjectModel.getInstance().getMapObjects();
-        for( MapObject obj : mapObjects) {
-            String symbolIcon = null;
-            switch(obj.getType()) {
-                case "MO":
-                    switch(obj.getSize()) {
-                        case "S":
-                            symbolIcon = "goblin";
-                            break;
-                        case "M":
-                            symbolIcon = "dragon";
-                            break;
-                        case "L":
-                            symbolIcon = "cthulhu";
-                            break;
-                    }
-                    break;
-                case "CA":
-                    switch(obj.getSize()) {
-                        case "S":
-                            symbolIcon = "candy";
-                            break;
-                        case "M":
-                            symbolIcon = "lollipop";
-                            break;
-                        case "L":
-                            symbolIcon = "donut";
-                            break;
-                    }
-                    break;
-            }
-            try {
-                symbolManager.create(new SymbolOptions()
-                        .withLatLng(new LatLng(obj.getLat(), obj.getLon()))
-                        .withIconImage(symbolIcon)
-                        .withIconSize(0.09f)
-                        .withData(MapObjectModel.getInstance().mapObjectJSON(obj)));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        symbolManager.addClickListener(new OnSymbolClickListener() {
+        //Display symbols on first map generation
+        showSymbolsOnMap(MapObjectModel.getInstance().getMapObjects(), symbolManager);
+
+        //Update map every minute
+        final Handler mapUpdater = new Handler();
+        Runnable runnable = new Runnable() {
             @Override
-            public void onAnnotationClick(Symbol symbol) {
-                //Todo: Create fight/eat method, adapt to symbol.getData()
-                Log.d("Symbol",symbol.toString());
-                Toast.makeText(MainActivity.this, symbol.getData().toString(), Toast.LENGTH_SHORT).show();
+            public void run() {
+                try{
+                    NetworkRequestHandler.getMapObjects(MainActivity.this, sessionIdObject, new ServerCallback() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            ArrayList<MapObject> oldObjects = MapObjectModel.getInstance().getMapObjects();
+                            MapObjectModel.getInstance().populate(response);
+                            ArrayList<MapObject> newObjects = MapObjectModel.getInstance().getMapObjects();
+                            if (!oldObjects.equals(newObjects))
+                                showSymbolsOnMap(newObjects, symbolManager);
+                            else
+                                Log.d("mapUpdater", "Data received from server hasn't changed. Not updating map.");
+                        }
+                    });
+                }
+                catch (Exception e) {
+                    // TODO: handle exception
+                }
+                finally{
+                    mapUpdater.postDelayed(this, updaterInterval);
+                }
             }
-        });
+        };
+        mapUpdater.postDelayed(runnable, updaterInterval);
+
     }
 
     /* Display user location icon */
@@ -266,17 +259,58 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         }
     }
 
+    // Display mapObjects in map, with their correspective JSON Data bundled inside.
+    public void showSymbolsOnMap(ArrayList<MapObject> mapObjects, SymbolManager symbolManager){
 
-    // Creates request for object img, to be incapsulated inside request as param
-    public JSONObject objectImgRequest(String id) {
-        final JSONObject imgReqeust = new JSONObject();
-        try {
-            imgReqeust.put("session_id", session_id);
-            imgReqeust.put("id",id);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        for( MapObject obj : mapObjects) {
+            String symbolIcon = null;
+            switch(obj.getType()) {
+                case "MO":
+                    switch(obj.getSize()) {
+                        case "S":
+                            symbolIcon = "goblin";
+                            break;
+                        case "M":
+                            symbolIcon = "dragon";
+                            break;
+                        case "L":
+                            symbolIcon = "cthulhu";
+                            break;
+                    }
+                    break;
+                case "CA":
+                    switch(obj.getSize()) {
+                        case "S":
+                            symbolIcon = "candy";
+                            break;
+                        case "M":
+                            symbolIcon = "lollipop";
+                            break;
+                        case "L":
+                            symbolIcon = "donut";
+                            break;
+                    }
+                    break;
+            }
+            try {
+                symbolManager.create(new SymbolOptions()
+                        .withLatLng(new LatLng(obj.getLat(), obj.getLon()))
+                        .withIconImage(symbolIcon)
+                        .withIconSize(0.09f)
+                        .withData(MapObjectModel.getInstance().mapObjectJSON(obj)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-        return imgReqeust;
+        symbolManager.addClickListener(new OnSymbolClickListener() {
+            @Override
+            public void onAnnotationClick(Symbol symbol) {
+                //Todo: Create fight/eat method, adapt to symbol.getData()
+                Log.d("Symbol",symbol.toString());
+                Toast.makeText(MainActivity.this, symbol.getData().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        Log.d("showSymbolsOnMap", "Map generated. "+mapObjects.size() +" mapObjects generated." );
     }
 
     @Override
