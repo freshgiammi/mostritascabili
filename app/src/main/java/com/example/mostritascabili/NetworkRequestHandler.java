@@ -136,6 +136,56 @@ public class NetworkRequestHandler {
         queue.add(mapObject);
     }
 
+    // Update profile: to be used with fightEat or on UserProfileFragment
+    public static void setProfile(Context context, final JSONObject param, final ServerCallback callback){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        Log.d("NetworkRequestHandler", "fightEat: Initialized");
+
+        JsonObjectRequest mapObject = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://ewserver.di.unimi.it/mobicomp/mostri/fighteat.php",
+                param,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("NetworkRequestHandler", "fighteat.php response: " + response.toString());
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("NetworkRequestHandler", "fightEat Error: " + error.toString());
+                error.printStackTrace();
+            }
+        });
+        queue.add(mapObject);
+    }
+
+    // Fight mobs or eat candies
+    public static void fightEat(Context context, final JSONObject param, final ServerCallback callback){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        Log.d("NetworkRequestHandler", "fightEat: Initialized");
+
+        JsonObjectRequest mapObject = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://ewserver.di.unimi.it/mobicomp/mostri/fighteat.php",
+                param,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("NetworkRequestHandler", "fighteat.php response: " + response.toString());
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("NetworkRequestHandler", "fightEat Error: " + error.toString());
+                error.printStackTrace();
+            }
+        });
+        queue.add(mapObject);
+    }
+
 
 }
 

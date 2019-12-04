@@ -33,8 +33,13 @@ public class ProfileModel{
         }
     }
 
-    public ArrayList<Profile> getProfile() {
-        return user;
+    // Clears model
+    public void clearAll(){
+        user.clear();
+    }
+
+    public Profile getProfile() {
+        return user.get(0);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.mostritascabili;
 
+import java.util.Objects;
+
 /**
  * MapObject
  * Creates a mapObject object. Used to handle mobs.
@@ -68,6 +70,24 @@ public class MapObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MapObject)) return false;
+        MapObject mapObject = (MapObject) o;
+        return id == mapObject.id &&
+                Double.compare(mapObject.lat, lat) == 0 &&
+                Double.compare(mapObject.lon, lon) == 0 &&
+                Objects.equals(type, mapObject.type) &&
+                Objects.equals(size, mapObject.size) &&
+                Objects.equals(name, mapObject.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, lat, lon, type, size, name);
     }
 
     @Override

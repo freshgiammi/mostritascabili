@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/coordinatorLayout">
+    android:id="@+id/coordinatorLayout"
+    android:fitsSystemWindows="true">
 
     <!-- Other components and views -->
 
@@ -35,6 +36,35 @@
         app:elevation="6dp"
         app:layout_anchor="@id/bar"
         app:srcCompat="@drawable/ic_my_location_white_24dp" />
+
+    <LinearLayout
+        android:id="@+id/user_ui"
+        android:layout_width="match_parent"
+        android:layout_height="56px"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:id="@+id/user_lp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:progress="60" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="153dp"
+            android:layout_height="match_parent"
+            android:background="#00FFFFFF" />
+
+        <TextView
+            android:id="@+id/user_xp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
