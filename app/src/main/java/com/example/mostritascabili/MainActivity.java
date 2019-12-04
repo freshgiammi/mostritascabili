@@ -149,8 +149,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
             @Override
             public void onCameraMoveStarted(int reason) {
                 CameraPosition cameraPosition = mapboxMap.getCameraPosition();
-                // mapboxMap can't hold his shit when rotated. To avoid NPE crashes,
-                // check against mapboxMap.getLocationComponent().getLastKnownLocation()
+                // mapboxMap can't hold his shit when rotated. To avoid NPE crashes, check against mapboxMap.getLocationComponent().getLastKnownLocation()
                 if (cameraPosition.target.getLatitude() != 0 && mapboxMap.getLocationComponent().getLastKnownLocation() != null){
                     CameraPosition position = new CameraPosition.Builder()
                             .target(new LatLng(mapboxMap.getLocationComponent().getLastKnownLocation().getLatitude(), mapboxMap.getLocationComponent().getLastKnownLocation().getLongitude()))
@@ -188,7 +187,8 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                         @Override
                         public void onSuccess(JSONObject response) {
                             ArrayList<MapObject> oldObjects = MapObjectModel.getInstance().getMapObjects();
-                            MapObjectModel.getInstance().populate(response);
+                            MapObjectModel.getInstance().clearAll(); // Clear current mapObjectModel
+                            MapObjectModel.getInstance().populate(response); // Update mapObjectModel
                             ArrayList<MapObject> newObjects = MapObjectModel.getInstance().getMapObjects();
                             if (!oldObjects.equals(newObjects))
                                 showSymbolsOnMap(newObjects, symbolManager);

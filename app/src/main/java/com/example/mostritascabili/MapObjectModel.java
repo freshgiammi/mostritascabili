@@ -17,12 +17,12 @@ import java.util.ArrayList;
 
 public class MapObjectModel{
     private static final MapObjectModel ourInstance = new MapObjectModel();
-    private ArrayList<MapObject> mapObject;
+    private ArrayList<MapObject> mapObjects;
 
     public static MapObjectModel getInstance(){return ourInstance;}
 
     private MapObjectModel(){
-        mapObject = new ArrayList<MapObject>();
+        mapObjects = new ArrayList<MapObject>();
     }
 
     // Populate model with mapObjects
@@ -35,7 +35,7 @@ public class MapObjectModel{
 
                 MapObject mapObjectData = gson.fromJson(current.toString(), MapObject.class);
                 Log.d("MapObjectModel", "Populating model with: "+mapObjectData.toString());
-                mapObject.add(mapObjectData);
+                mapObjects.add(mapObjectData);
             }
         } catch (Exception ex){
             ex.printStackTrace();
@@ -57,9 +57,14 @@ public class MapObjectModel{
       return element;
     }
 
+    // Clears model
+    public void clearAll(){
+        mapObjects.clear();
+    }
+
     // Return all mapObjects
     public ArrayList<MapObject> getMapObjects() {
-        return mapObject;
+        return mapObjects;
     }
 
 }
