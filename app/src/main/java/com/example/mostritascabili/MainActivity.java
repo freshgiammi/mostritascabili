@@ -355,7 +355,12 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                             @Override
                             public void onSuccess(JSONObject response) {
                                 try {
-                                    MobInteractionFragment mobInteractionFragment = new MobInteractionFragment(symbolData,response.getString("img"),enabled);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("img",response.getString("img"));
+                                    bundle.putString("obj",symbol.getData().getAsJsonObject().toString()); // put JSONObject as string, we will regenerate inside fragment
+                                    bundle.putBoolean("enabled", enabled);
+                                    MobInteractionFragment mobInteractionFragment = new MobInteractionFragment();
+                                    mobInteractionFragment.setArguments(bundle);
                                     mobInteractionFragment.show(getSupportFragmentManager(), mobInteractionFragment.getTag());
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -364,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                         });
                     }
                 };
-                symbolManager.addClickListener(onSymbolClickListener); // Add listener to symbolMAP (clear on each update)
+                symbolManager.addClickListener(onSymbolClickListener); // Add listener to symbolManager (clear on each update)
                 Log.d("showSymbolsOnMap", "Map generated. "+MapObjectModel.getInstance().getMapObjects().size() +" mapObjects generated." );
             }
         });

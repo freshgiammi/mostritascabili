@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,15 +32,23 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
     private Bitmap img;
     private Boolean enabled;
 
-    public MobInteractionFragment(MapObject mapObject, String img, Boolean enabled) {
-        MobInteractionFragment.this.mapObject = mapObject;
-        byte[] decodedString = Base64.decode(img,Base64.DEFAULT);
-        MobInteractionFragment.this.img = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        MobInteractionFragment.this.enabled = enabled;
+    public MobInteractionFragment() {
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        // BUNDLE
+        Bundle bundle = this.getArguments();
+        MobInteractionFragment.this.enabled = bundle.getBoolean("enabled");
+        byte[] decodedString = Base64.decode(bundle.getString("img"),Base64.DEFAULT);
+        MobInteractionFragment.this.img = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        Gson g = new Gson();
+        MobInteractionFragment.this.mapObject = g.fromJson(bundle.getString("obj"),MapObject.class);
+        Log.d("YOLO",mapObject.toString());
+        // BUNDLE
 
         View view = inflater.inflate(R.layout.fragment_mob_interaction,container,false);
         NavigationView navigationView = view.findViewById(R.id.navigation_view_mob);
