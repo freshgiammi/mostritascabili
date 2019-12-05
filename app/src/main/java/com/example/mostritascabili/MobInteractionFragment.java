@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
@@ -15,14 +14,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +49,19 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
         MobInteractionFragment.this.mapObject = g.fromJson(bundle.getString("obj"),MapObject.class);
         Log.d("YOLO",mapObject.toString());
         // BUNDLE
+
+        /* Google says that a BottomSheetDialog not being expanded is the expected behaviour. On landscape though,
+        *  this looks kinda weird. Override the onShow method of the dialog to set the BottomSheetBehaviour to STATE_EXPANDED.
+        *  Note that this still isn't perfect, as sliding the menu down could put it in a STATE_COLLAPSED state.
+        * */
+        getDialog().setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                BottomSheetDialog d = (BottomSheetDialog) dialog;
+                View bottomSheetInternal = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                BottomSheetBehavior.from(bottomSheetInternal).setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
 
         View view = inflater.inflate(R.layout.fragment_mob_interaction,container,false);
         NavigationView navigationView = view.findViewById(R.id.navigation_view_mob);
