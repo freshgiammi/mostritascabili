@@ -4,9 +4,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
+
+import android.app.FragmentManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -98,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
             }
         });
 
-        //Todo: Show xp/lp in UI
         lp = findViewById(R.id.user_lp);
         xp = findViewById(R.id.user_xp);
         lp.setProgress(ProfileModel.getInstance().getProfile().getLp());
@@ -326,22 +330,41 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                     @Override
                     public void onAnnotationClick(final Symbol symbol) {
                         final MapObject symbolData = gson.fromJson(symbol.getData().getAsJsonObject().toString(), MapObject.class);
-                        //Todo: Display item info. Adapt for MO/CA difference
-                        // Check if user is less than 50m far from the object.
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setMessage("Want to fight??")
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        fightEat(symbolData);
-                                    }
-                                })
-                                .setNegativeButton("No", null)
-                                .show();
+
+                        JSONObject param = sessionIdObject;
+                        try {
+                            param.put("target_id",symbolData.getId());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        Location userLocation = new Location("");
+                        userLocation.setLatitude(mapboxMap.getLocationComponent().getLastKnownLocation().getLatitude());
+                        userLocation.setLongitude(mapboxMap.getLocationComponent().getLastKnownLocation().getLongitude());
+                        Location mobLocation = new Location("");
+                        mobLocation.setLatitude(symbolData.getLat());
+                        mobLocation.setLongitude(symbolData.getLon());
+                        float distanceInMeters = userLocation.distanceTo(mobLocation);
+                        final Boolean enabled;
+                        if (distanceInMeters > 50)
+                            enabled = false;
+                        else
+                            enabled = true;
+
+                        NetworkRequestHandler.getObjectImg(MainActivity.this, param, new ServerCallback() {
+                            @Override
+                            public void onSuccess(JSONObject response) {
+                                try {
+                                    MobInteractionFragment mobInteractionFragment = new MobInteractionFragment(symbolData,response.getString("img"),enabled);
+                                    mobInteractionFragment.show(getSupportFragmentManager(), mobInteractionFragment.getTag());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                     }
                 };
-                symbolManager.addClickListener(onSymbolClickListener); // Replace with new listener
-
+                symbolManager.addClickListener(onSymbolClickListener); // Add listener to symbolMAP (clear on each update)
                 Log.d("showSymbolsOnMap", "Map generated. "+MapObjectModel.getInstance().getMapObjects().size() +" mapObjects generated." );
             }
         });
@@ -378,15 +401,19 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                             try {
                                 switch (symbolData.getType()){
                                     case "CA":
-                                        int  acquiredLp= response.getInt("lp") - ProfileModel.getInstance().getProfile().getLp();
+                                        int  acquiredLp = response.getInt("lp") - ProfileModel.getInstance().getProfile().getLp();
                                         Toast.makeText(getApplicationContext(), "Candy eaten! " +acquiredLp +" LP restored!"  , Toast.LENGTH_SHORT).show();
                                         break;
                                     case "MO":
-                                        if (response.getBoolean("died"))
+                                        if (response.getBoolean("died")) {
                                             Toast.makeText(getApplicationContext(), "You're dead! Be careful next time. Starting over!", Toast.LENGTH_SHORT).show();
-                                            //Todo: Reload
+                                            // Reload activity
+                                            Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+                                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(i);
+                                        }
                                         else{
-                                            int  acquiredXp= response.getInt("xp") - ProfileModel.getInstance().getProfile().getXp();
+                                            int acquiredXp= response.getInt("xp") - ProfileModel.getInstance().getProfile().getXp();
                                             Toast.makeText(getApplicationContext(), "Good fight! You acquired "+acquiredXp+" XP!", Toast.LENGTH_SHORT).show();
                                         }
                                         break;
@@ -396,7 +423,6 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                                     public void onSuccess(JSONObject response) {
                                         ProfileModel.getInstance().clearAll();
                                         ProfileModel.getInstance().populate(response);
-                                        //Todo: Update xp/lp in UI
                                         lp.setProgress(ProfileModel.getInstance().getProfile().getLp());
                                         xp.setText(String.valueOf(ProfileModel.getInstance().getProfile().getXp()));
                                         showSymbolsOnMap(MainActivity.this.symbolManager);
