@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -25,7 +23,10 @@ import com.google.gson.Gson;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * MobInteractionFragment
+ * This fragment is displayed when the user clicks on a Symbol in the current MapView.
+ * Dynamically adapts to JSON data bundled within each Symbol, and displays a button if the
+ * candy can be eaten, or if the mob can be defeated.
  */
 public class MobInteractionFragment extends BottomSheetDialogFragment {
     private MapObject mapObject;

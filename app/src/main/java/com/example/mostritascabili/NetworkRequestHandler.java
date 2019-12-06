@@ -4,15 +4,12 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -180,6 +177,30 @@ public class NetworkRequestHandler {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("NetworkRequestHandler", "fightEat Error: " + error.toString());
+                error.printStackTrace();
+            }
+        });
+        queue.add(mapObject);
+    }
+
+    // Get the best 20 users
+    public static void getLeaderboard(Context context, final JSONObject param, final ServerCallback callback){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        Log.d("NetworkRequestHandler", "getLeaderboard: Initialized");
+        JsonObjectRequest mapObject = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://ewserver.di.unimi.it/mobicomp/mostri/ranking.php",
+                param,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("NetworkRequestHandler", "ranking.php response: " + response.toString());
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("NetworkRequestHandler", "getLeaderboard Error: " + error.toString());
                 error.printStackTrace();
             }
         });

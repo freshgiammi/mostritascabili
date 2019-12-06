@@ -3,7 +3,6 @@ package com.example.mostritascabili;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

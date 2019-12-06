@@ -1,14 +1,16 @@
 package com.example.mostritascabili;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -27,7 +29,6 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
 
         /* Google says that a BottomSheetDialog not being expanded is the expected behaviour. On landscape though,
          *  this looks kinda weird. Override the onShow method of the dialog to set the BottomSheetBehaviour to STATE_EXPANDED.
@@ -54,6 +55,8 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
                         break;
                     case R.id.leaderboard:
                         Log.d("onNavigationItemSelected", "Leaderboard clicked!");
+                        Intent i = new Intent(getActivity(), Leaderboard.class);
+                        startActivity(i);
                         break;
                 }
                 return false;

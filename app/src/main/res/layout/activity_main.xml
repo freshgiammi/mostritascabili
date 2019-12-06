@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/coordinatorLayout"
-    android:fitsSystemWindows="true">
+    android:id="@+id/coordinatorLayout">
 
     <!-- Other components and views -->
 
@@ -41,15 +40,18 @@
     <LinearLayout
         android:id="@+id/user_ui"
         android:layout_width="match_parent"
-        android:layout_height="56px"
-        android:orientation="horizontal">
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:background="@color/carbon">
 
         <ProgressBar
             android:id="@+id/user_lp"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
+            android:indeterminateTint="@color/reddish"
             android:progress="60" />
 
         <View
@@ -61,7 +63,7 @@
         <TextView
             android:id="@+id/user_xp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center" />
 
