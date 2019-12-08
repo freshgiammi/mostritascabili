@@ -85,12 +85,12 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
                 size.setTitle("Large");
                 break;
         }
-        if (mapObject.getType()=="MO") {
+        if (mapObject.getType().equals("MO")) {
             type.setTitle("Monster");
             button.setText("Fight!");
             alertDialogTitle="Fighting!";
             alertDialogText="Are you sure you want to fight?!";
-        }else {
+        } else {
             type.setTitle("Candy");
             button.setText("Eat!");
             alertDialogTitle="Eating!";
@@ -98,10 +98,10 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
         }
         name.setTitle(mapObject.getName());
         mobImg.setImageBitmap(img);
-         if (enabled == false || ProfileModel.getInstance().getProfile().getLp() == 100) {
-            button.setEnabled(false);
-            button.setVisibility(View.GONE);
-        }else {
+         //if (enabled == false || ProfileModel.getInstance().getProfile().getLp() == 100) {
+           // button.setEnabled(false);
+            //button.setVisibility(View.GONE);
+        //}else {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -114,13 +114,14 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
                                     Activity act = getActivity();
                                     if (act instanceof MainActivity)
                                         ((MainActivity) act).fightEat(mapObject);
+                                    dismiss(); // Closes sheet
                                 }
                             })
                             .setNegativeButton("No",null)
                             .show();
                 }
             });
-        }
+       // }
         return view;
     }
 

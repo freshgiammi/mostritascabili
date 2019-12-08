@@ -1,16 +1,15 @@
 package com.example.mostritascabili;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+
+import com.google.android.material.appbar.MaterialToolbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +21,18 @@ public class Leaderboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
+
+        MaterialToolbar toolbar =  findViewById(R.id.materialToolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Leaderboard");
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             finish();
+            }
+        });
+
 
         //Setup a RecyclerView with an empty Adapter, updated inside ServerCallback.onSuccess
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -49,10 +60,4 @@ public class Leaderboard extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        //HACK: Do not show Modal Bottom Sheet when going back
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
-    }
 }

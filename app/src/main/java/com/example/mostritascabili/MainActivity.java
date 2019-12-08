@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         */
 
         //WORKAROUND: Edge to edge doesn't work well with MapBox, fake it with transparency and a white navbar.
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.carbon));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         // Manage BottomAppBar and fragments
         BottomAppBar bar = findViewById(R.id.bar);
@@ -507,8 +507,8 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setMessage("Sei sicuro di voler uscire?")
-                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                .setMessage("You're sure you want to quit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         MainActivity.super.onBackPressed();

@@ -8,8 +8,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * ProfileModel
- * Model for Profile. Holds only the user profile.
+ * LeaderboardModel
+ * Model for Profiles. Holds only the best 20 profiles.
  */
 
 public class LeaderboardModel{
@@ -24,6 +24,7 @@ public class LeaderboardModel{
 
     public void populate(JSONObject response){
         try {
+            clearAll();
             JSONArray leaderboardArray = response.getJSONArray("ranking");
             for (int i = 0; i < leaderboardArray.length(); i++) {
                 JSONObject current = leaderboardArray.getJSONObject(i);

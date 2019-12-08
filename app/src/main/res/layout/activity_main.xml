@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:backgroundTint="@color/carbon"
+        app:backgroundTint="@color/colorPrimaryDark"
         app:fabAlignmentMode="end"
         app:fabCradleRoundedCornerRadius="16dp"
         app:navigationIcon="@drawable/ic_menu_white_24dp" />
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:onClick="onClickCameraCenter"
-        app:backgroundTint="@color/carbon"
+        app:backgroundTint="@color/colorPrimaryDark"
         app:elevation="6dp"
         app:layout_anchor="@id/bar"
         app:tint="@android:color/white"
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
-        android:background="@color/carbon">
+        android:background="@color/colorPrimaryDark">
 
         <ProgressBar
             android:id="@+id/user_lp"
@@ -51,8 +51,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:indeterminateTint="@color/reddish"
-            android:progress="60" />
+            android:indeterminateTint="@android:color/white"
+            android:progress="100" />
 
         <View
             android:id="@+id/divider"
@@ -65,7 +65,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center" />
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textColor="@android:color/white"/>
 
     </LinearLayout>
 

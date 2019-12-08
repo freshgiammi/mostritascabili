@@ -1,6 +1,7 @@
 package com.example.mostritascabili;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,6 +24,7 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         final Intent intent = new Intent(this, MainActivity.class);
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
 
         // Create sharedPrefs to store session_id.
         final SharedPreferences storedSessionID = getSharedPreferences("session_id", MODE_PRIVATE);
@@ -30,10 +32,10 @@ public class Splash extends AppCompatActivity {
 
         if (!NetworkRequestHandler.isConnected(this)) {
             new AlertDialog.Builder(Splash.this)
-                    .setTitle("Non sei connesso alla rete!")
-                    .setMessage("Ci dispiace, ma per utilizzare Mostri Tascabili, abbiamo bisogno che tu sia connesso ad una rete! (Wifi o mobile)")
+                    .setTitle("You're not connected to the internet!")
+                    .setMessage("We're sorry, but to use Mostri Tascabili you need to be connected to the internet. (Wifi or mobile)")
                     .setCancelable(false)
-                    .setPositiveButton("Ho capito.", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Got it.", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             System.exit(0);

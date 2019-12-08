@@ -4,18 +4,18 @@
         <item
             android:id="@+id/mob_name"
             android:icon="@drawable/ic_person_outline_black_24dp"
-            android:title="Utente"
+            android:title="mob_name"
             android:enabled="false"/>
         <item
             android:id="@+id/mob_type"
             android:icon="@drawable/ic_insert_chart_black_24dp"
-            android:title="Classifica"
+            android:title="mob_type"
             android:enabled="false"/>
 
         <item
             android:id="@+id/mob_size"
             android:icon="@drawable/ic_insert_chart_black_24dp"
-            android:title="Classifica"
+            android:title="mob_size"
             android:enabled="false"/>
     </group>
 </menu>

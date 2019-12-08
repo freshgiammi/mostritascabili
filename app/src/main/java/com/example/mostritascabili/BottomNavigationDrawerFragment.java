@@ -52,11 +52,15 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
                 switch (id){
                     case R.id.user:
                         Log.d("onNavigationItemSelected", "User clicked!");
+                        Intent x = new Intent(getActivity(), UserProfile.class);
+                        startActivity(x);
+                        dismiss(); // Closes sheet
                         break;
                     case R.id.leaderboard:
                         Log.d("onNavigationItemSelected", "Leaderboard clicked!");
                         Intent i = new Intent(getActivity(), Leaderboard.class);
                         startActivity(i);
+                        dismiss(); // Closes sheet
                         break;
                 }
                 return false;

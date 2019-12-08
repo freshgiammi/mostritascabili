@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardItem> {
     private LayoutInflater mInflater;
 
