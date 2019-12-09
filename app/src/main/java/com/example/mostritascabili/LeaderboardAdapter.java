@@ -22,7 +22,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardItem> {
     @Override
     public void onBindViewHolder(LeaderboardItem holder, int position) {
         Profile profile = LeaderboardModel.getInstance().getProfileByIndex(position);
-        holder.setText(profile);
+        holder.generateViewHolder(profile);
     }
     @Override
     public int getItemCount() {

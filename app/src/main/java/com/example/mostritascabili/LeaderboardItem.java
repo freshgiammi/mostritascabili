@@ -2,7 +2,9 @@ package com.example.mostritascabili;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,11 +13,13 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class LeaderboardItem extends RecyclerView.ViewHolder {
     private TextView leaderboard_username;
     private TextView leaderboard_xp;
     private TextView leaderboard_rank;
-    private ImageView leaderboard_img;
+    private CircleImageView leaderboard_img;
     private Bitmap image;
 
     public LeaderboardItem(View itemView) {
@@ -26,9 +30,8 @@ public class LeaderboardItem extends RecyclerView.ViewHolder {
         leaderboard_rank = itemView.findViewById(R.id.leaderboard_rank);
 
     }
-    public void setText(Profile profile) {
-        setIsRecyclable(false); //Todo: Solve issue of textColor and img not being correctly set to each CardView
-
+    public void generateViewHolder(Profile profile) {
+        leaderboard_img.setImageResource(R.drawable.ic_person_outline_black_24dp); // Clean image before recycling
         if (profile.getImg() != null) { // Check that IMG value isn't null.
             byte[] decodedString = Base64.decode(profile.getImg(), Base64.DEFAULT);
             image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -54,6 +57,11 @@ public class LeaderboardItem extends RecyclerView.ViewHolder {
                  leaderboard_rank.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.bronze));
                  leaderboard_rank.setTypeface(leaderboard_rank.getTypeface(), Typeface.BOLD);
                  break;
+             default:
+                 leaderboard_rank.setTextColor(Color.BLACK);
+                 leaderboard_rank.setTypeface(null, Typeface.NORMAL); // Set null, otherwise we'll pick up BOLD again and BOLD > NORMAL
+                 break;
+
          }
 
         leaderboard_xp.setText(String.valueOf(profile.getXp()));
