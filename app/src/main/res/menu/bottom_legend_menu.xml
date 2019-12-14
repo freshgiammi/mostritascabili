@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/mo_l"
+            android:icon="@drawable/cthulhu"
+            android:title="Monster, size: Large" />
+        <item
+            android:id="@+id/mo_m"
+            android:icon="@drawable/dragon"
+            android:title="Monster, size: Medium" />
+        <item
+            android:id="@+id/mo_s"
+            android:icon="@drawable/goblin"
+            android:title="Monster, size: Small" />
+        <item
+            android:id="@+id/ca_l"
+            android:icon="@drawable/donut"
+            android:title="Candy, size: Large" />
+        <item
+            android:id="@+id/ca_m"
+            android:icon="@drawable/lollipop"
+            android:title="Candy, size: Medium" />
+        <item
+            android:id="@+id/ca_s"
+            android:icon="@drawable/candy"
+            android:title="Candy, size: Small" />
+    </group>
+</menu>

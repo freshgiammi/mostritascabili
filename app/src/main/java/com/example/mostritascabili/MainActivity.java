@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         xp = findViewById(R.id.user_xp);
         lp.setProgress(ProfileModel.getInstance().getProfile().getLp());
         xp.setText(String.valueOf(ProfileModel.getInstance().getProfile().getXp()));
-
         // ENDING UI INITIALIZATION
 
         // Acquire session_id for future references and update sessionIdObject

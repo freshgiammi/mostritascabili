@@ -62,6 +62,12 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
                         startActivity(i);
                         dismiss(); // Closes sheet
                         break;
+                    case R.id.legend:
+                        Log.d("onNavigationItemSelected", "Leaderboard clicked!");
+                        LegendBottomFragment legendBottomFragment = new LegendBottomFragment();
+                        legendBottomFragment.show(getFragmentManager(), legendBottomFragment.getTag());
+                        dismiss(); // Closes sheet
+                        break;
                 }
                 return false;
             }

@@ -6,9 +6,11 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,11 +34,18 @@ public class LeaderboardItem extends RecyclerView.ViewHolder {
     }
     public void generateViewHolder(Profile profile) {
         leaderboard_img.setImageResource(R.drawable.ic_person_outline_black_24dp); // Clean image before recycling
-        if (profile.getImg() != null) { // Check that IMG value isn't null.
+        if (profile.getImg() != null && org.apache.commons.codec.binary.Base64.isBase64(profile.getImg())) { // Check that IMG value isn't null.
             byte[] decodedString = Base64.decode(profile.getImg(), Base64.DEFAULT);
             image = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            leaderboard_img.setImageBitmap(image);
-        }
+            if (image != null)
+                // Check that Base64 has been decoded correctly into a Bitmap image.
+                // Some strings could be passed as valid (i.e "img", "aaa")
+                // But they're actually not Base64 encoded bitmaps.
+                // Only display the image if it's been correctly encoded.
+                leaderboard_img.setImageBitmap(image);
+            } else if (profile.getImg() != null)
+                // If the string isn't Base64, log it
+                Log.d("LeaderboardItem",profile.getUsername()+" has an invalid Base64 encoded profile image.");
 
          if (profile.getUsername() != null)
              leaderboard_username.setText(profile.getUsername());
