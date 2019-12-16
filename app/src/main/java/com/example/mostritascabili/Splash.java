@@ -59,13 +59,13 @@ public class Splash extends AppCompatActivity {
                     SharedPreferences.Editor editor = storedSessionID.edit();
                     editor.putString("session_id", session_id);
                     editor.apply();
-
+                    final JSONObject sessionIdObject = response;
                     // Feed response to getProfile and getMapObjects
-                    NetworkRequestHandler.getProfile(Splash.this, response, new ServerCallback() {
+                    NetworkRequestHandler.getProfile(Splash.this, sessionIdObject, new ServerCallback() {
                         @Override
                         public void onSuccess(JSONObject response) {
                         ProfileModel.getInstance().populate(response);
-                            NetworkRequestHandler.getMapObjects(Splash.this, response, new ServerCallback() {
+                            NetworkRequestHandler.getMapObjects(Splash.this, sessionIdObject, new ServerCallback() {
                                 @Override
                                 public void onSuccess(JSONObject response) {
                                     MapObjectModel.getInstance().populate(response);
