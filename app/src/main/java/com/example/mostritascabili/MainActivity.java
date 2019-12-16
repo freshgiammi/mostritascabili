@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
     private FloatingActionButton centerFAB;
     private String session_id;
     private ProgressBar lp;
-    private TextView xp;
+    private TextView lp_text;
+    private TextView xp_text;
     private JSONObject sessionIdObject;
     private SymbolManager symbolManager = null;
     private OnSymbolClickListener onSymbolClickListener;
@@ -101,9 +102,11 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         });
 
         lp = findViewById(R.id.user_lp);
-        xp = findViewById(R.id.user_xp);
+        lp_text = findViewById(R.id.user_lp_text);
+        xp_text = findViewById(R.id.user_xp_text);
         lp.setProgress(ProfileModel.getInstance().getProfile().getLp());
-        xp.setText(String.valueOf(ProfileModel.getInstance().getProfile().getXp()));
+        lp_text.setText(String.valueOf(ProfileModel.getInstance().getProfile().getLp()));
+        xp_text.setText(String.valueOf(ProfileModel.getInstance().getProfile().getXp()));
         // ENDING UI INITIALIZATION
 
         // Acquire session_id for future references and update sessionIdObject
@@ -425,7 +428,8 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                                         ProfileModel.getInstance().clearAll();
                                         ProfileModel.getInstance().populate(response);
                                         lp.setProgress(ProfileModel.getInstance().getProfile().getLp());
-                                        xp.setText(String.valueOf(ProfileModel.getInstance().getProfile().getXp()));
+                                        lp_text.setText(String.valueOf(ProfileModel.getInstance().getProfile().getLp()));
+                                        xp_text.setText(String.valueOf(ProfileModel.getInstance().getProfile().getXp()));
                                         showSymbolsOnMap(MainActivity.this.symbolManager);
                                     }
                                 });
