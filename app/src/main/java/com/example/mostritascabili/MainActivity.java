@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         MainActivity.this.mapboxMap = mapboxMap;
         mapboxMap.getUiSettings().setCompassMargins(0,100,40,0); // Set margin for translucent status bar
-        mapboxMap.setStyle(Style.LIGHT,this);
+        mapboxMap.setStyle(Style.DARK,this);
     }
 
     @Override
