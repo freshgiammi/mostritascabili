@@ -24,7 +24,7 @@ public class Splash extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         final Intent intent = new Intent(this, MainActivity.class);
-        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         // Create sharedPrefs to store session_id.
         final SharedPreferences storedSessionID = getSharedPreferences("session_id", MODE_PRIVATE);

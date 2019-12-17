@@ -10,8 +10,8 @@
 
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bar"
@@ -37,13 +37,16 @@
         app:srcCompat="@drawable/ic_my_location_white_24dp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/hud"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="30dp"
+        android:background="@drawable/round_rect_shape">
 
         <RelativeLayout
-            android:layout_width="75dp"
-            android:layout_height="75dp">
+            android:layout_width="100dp"
+            android:layout_height="100dp">
 
             <ProgressBar
                 android:id="@+id/user_lp"
@@ -52,14 +55,14 @@
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:background="@drawable/circle_bg"
-                android:indeterminateTint="@color/colorAccent"
+                android:indeterminateTint="@color/green"
                 android:progress="100"
                 android:progressDrawable="@drawable/circle"
-                android:progressTint="@color/colorAccent" />
+                android:progressTint="@color/green" />
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/circle_white" />
 
@@ -76,7 +79,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="LP"
-                    android:textSize="10dp"/>
+                    android:textSize="18dp"/>
 
                 <TextView
                     android:id="@+id/user_lp_text"
@@ -92,8 +95,8 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="75dp"
-            android:layout_height="75dp">
+            android:layout_width="100dp"
+            android:layout_height="100dp">
 
             <ProgressBar
                 android:id="@+id/user_xp"
@@ -108,8 +111,8 @@
                 android:progressTint="@color/colorAccent" />
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/circle_white" />
 
@@ -126,7 +129,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="XP"
-                    android:textSize="10dp"/>
+                    android:textSize="18dp"/>
 
                 <TextView
                     android:id="@+id/user_xp_text"

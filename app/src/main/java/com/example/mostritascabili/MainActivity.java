@@ -4,15 +4,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,24 +77,12 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         Mapbox.getInstance(this, "pk.eyJ1IjoiZnJlc2hnaWFtbWkiLCJhIjoiY2szOHpjcjgzMGNweDNubmN0OGpzN2NmdiJ9.WR7W60fkc9bJEZx1pAlrJw");
         setContentView(R.layout.activity_main);
 
-
         // UI INITIALIZATION
-
         //Used for Edge-to-Edge gestures
-        /*
-        final View decorView = findViewById(R.id.coordinatorLayout);
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        ViewCompat.setOnApplyWindowInsetsListener(decorView, new OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                v.setPadding(0,0,0,insets.getSystemWindowInsetBottom());
-                return insets.consumeSystemWindowInsets();
-            }
-        });
-        */
-
-        //WORKAROUND: Edge to edge doesn't work well with MapBox, fake it with transparency and a white navbar.
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        final View rootView = findViewById(R.id.coordinatorLayout);
+        rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         // Manage BottomAppBar and fragments
         BottomAppBar bar = findViewById(R.id.bar);
@@ -156,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         MainActivity.this.mapboxMap = mapboxMap;
-        mapboxMap.getUiSettings().setCompassMargins(0,100,40,0); // Set margin for translucent status bar
+        mapboxMap.getUiSettings().setCompassMargins(0,115,40,0); // Set margin for translucent status bar
         mapboxMap.setStyle(Style.DARK,this);
     }
 
@@ -174,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                     CameraPosition position = new CameraPosition.Builder()
                             .target(new LatLng(mapboxMap.getLocationComponent().getLastKnownLocation().getLatitude(), mapboxMap.getLocationComponent().getLastKnownLocation().getLongitude()))
                             .zoom(15)
-                            .tilt(10)
+                            .tilt(15)
                             .build();
                     if (!cameraPosition.equals(position))
                         centerFAB.show();
@@ -242,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
             locationComponent.setCameraMode(CameraMode.TRACKING);
             locationComponent.setRenderMode(RenderMode.COMPASS);
             locationComponent.zoomWhileTracking(15);
-            locationComponent.tiltWhileTracking(10);
+            locationComponent.tiltWhileTracking(15);
         } else {
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(this);
