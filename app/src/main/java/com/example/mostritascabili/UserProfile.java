@@ -57,7 +57,6 @@ public class UserProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-
         final SharedPreferences storedSessionID = getSharedPreferences("session_id", MODE_PRIVATE);
         final String session_id = storedSessionID.getString("session_id", null);
 
@@ -163,35 +162,29 @@ public class UserProfile extends AppCompatActivity {
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
 
-            // Get size of current URI Image, check if it's below 100kb
-            Cursor cursor = getContentResolver().query(selectedImage, null, null, null, null);
-            cursor.moveToFirst();
-            long size = cursor.getLong(cursor.getColumnIndex(OpenableColumns.SIZE));
+            Bitmap bitmap = null;
+            String encoded = null;
+            try {
+                bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.getContentResolver(),selectedImage));
+                img.setImageBitmap(bitmap);
 
-            if (size < 100000) {
-                cursor.close();
-                Bitmap bitmap = null;
-                String encoded = null;
-                try {
-                    bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.getContentResolver(),selectedImage));
-                    img.setImageBitmap(bitmap);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream.toByteArray();
+                encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                    byte[] byteArray = byteArrayOutputStream.toByteArray();
-                    encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            JSONObject param = sessionIdObject;
+            try {
+                param.put("img",encoded);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-                JSONObject param = sessionIdObject;
-                try {
-                    param.put("img",encoded);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
+            if (encoded.length() < 137000){
                 NetworkRequestHandler.setProfile(this, param, new ServerCallback() {
                     @Override
                     public void onSuccess(JSONObject response) {
@@ -205,8 +198,9 @@ public class UserProfile extends AppCompatActivity {
                         });
                     }
                 });
-            } else
-                Toast.makeText(UserProfile.this, "The image is too big! Select something smaller than 100kb.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(UserProfile.this, "Image is too big! Select something smaller than 100kb..", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

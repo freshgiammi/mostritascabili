@@ -4,12 +4,16 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -134,7 +138,7 @@ public class NetworkRequestHandler {
     }
 
     // Update profile: to be used with fightEat or on UserProfileFragment
-    public static void setProfile(Context context, final JSONObject param, final ServerCallback callback){
+    public static void setProfile(final Context context, final JSONObject param, final ServerCallback callback){
         RequestQueue queue = Volley.newRequestQueue(context);
         Log.d("NetworkRequestHandler", "setProfile: Initialized");
 
@@ -151,6 +155,13 @@ public class NetworkRequestHandler {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                try {
+                    if(param.getString("img")!= null){
+                       Toast.makeText(context, "Image is too big!!", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 Log.d("NetworkRequestHandler", "setProfile Error: " + error.toString());
                 error.printStackTrace();
             }
@@ -206,8 +217,6 @@ public class NetworkRequestHandler {
         });
         queue.add(mapObject);
     }
-
-
 }
 
 

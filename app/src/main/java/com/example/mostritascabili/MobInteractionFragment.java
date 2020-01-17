@@ -88,37 +88,23 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
         if (mapObject.getType().equals("MO")) {
             type.setTitle("Monster");
             button.setText("Fight!");
-            alertDialogTitle="Fighting!";
-            alertDialogText="Are you sure you want to fight?!";
         } else {
             type.setTitle("Candy");
             button.setText("Eat!");
-            alertDialogTitle="Eating!";
-            alertDialogText="Are you sure you eat this candy?";
         }
         name.setTitle(mapObject.getName());
         mobImg.setImageBitmap(img);
          //if (enabled == false || ProfileModel.getInstance().getProfile().getLp() == 100) {
            // button.setEnabled(false);
             //button.setVisibility(View.GONE);
-        //}else {
+        //} else {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new MaterialAlertDialogBuilder(getActivity())
-                            .setTitle(alertDialogTitle)
-                            .setMessage(alertDialogText)
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Activity act = getActivity();
-                                    if (act instanceof MainActivity)
-                                        ((MainActivity) act).fightEat(mapObject);
-                                    dismiss(); // Closes sheet
-                                }
-                            })
-                            .setNegativeButton("No",null)
-                            .show();
+                    Activity act = getActivity();
+                    if (act instanceof MainActivity)
+                        ((MainActivity) act).fightEat(mapObject);
+                    dismiss(); // Closes sheet
                 }
             });
        // }
