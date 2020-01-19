@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                         .target(new LatLng(lat, lon))
                         .zoom(15)
                         .tilt(10)
+                        .bearing(0)
                         .build();
                 mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 1000);
                 Toast.makeText(getApplicationContext(), "Camera centered!", Toast.LENGTH_SHORT).show();
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
     @Override
     public void onMapReady(@NonNull final MapboxMap mapboxMap) {
         MainActivity.this.mapboxMap = mapboxMap;
-        mapboxMap.getUiSettings().setCompassMargins(0,115,40,0); // Set margin for translucent status bar
+        mapboxMap.getUiSettings().setCompassEnabled(false); // Hide compass: we can use the cameraFAB to center. Allows us to hide for userdata
         mapboxMap.setStyle(Style.DARK,this);
     }
 
