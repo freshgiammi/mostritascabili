@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
-        android:elevation="15dp"
         android:background="@color/colorPrimaryDark"
         app:titleTextColor="@android:color/white"/>
 
@@ -20,6 +19,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="?attr/actionBarSize"/>
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@drawable/round_rect_shape"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
