@@ -69,7 +69,9 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
         Menu menu = navigationView.getMenu();
         MenuItem name = menu.findItem(R.id.mob_name);
         MenuItem size = menu.findItem(R.id.mob_size);
-        MenuItem type = menu.findItem(R.id.mob_type);
+        MenuItem lp = menu.findItem(R.id.mob_lp);
+        MenuItem xp = menu.findItem(R.id.mob_xp);
+        String lpstat = "";
         ImageView mobImg = view.findViewById(R.id.mob_image);
         MaterialButton button = view.findViewById(R.id.mob_button);
         final String alertDialogText;
@@ -77,20 +79,29 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
         switch(mapObject.getSize()) {
             case "S":
                 size.setTitle("Small");
+                xp.setTitle("XP Gain: 1");
+                lpstat = "0-50";
+                lp.setTitle("Possible LP Loss: " +lpstat);
                 break;
             case "M":
                 size.setTitle("Medium");
+                xp.setTitle("XP Gain: 3");
+                lpstat = "25-75";
+                lp.setTitle("Possible LP Loss: " +lpstat);
                 break;
             case "L":
                 size.setTitle("Large");
+                xp.setTitle("XP Gain :10");
+                lpstat = "50-100";
+                lp.setTitle("Possible LP Loss: " +lpstat);
                 break;
         }
         if (mapObject.getType().equals("MO")) {
-            type.setTitle("Monster");
             button.setText("Fight!");
         } else {
-            type.setTitle("Candy");
             button.setText("Eat!");
+            xp.setTitle("No XP Gain.");
+            lp.setTitle("Possible LP Gain: " +lpstat);
         }
         name.setTitle(mapObject.getName());
         mobImg.setImageBitmap(img);

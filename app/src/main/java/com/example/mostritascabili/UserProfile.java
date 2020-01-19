@@ -166,7 +166,6 @@ public class UserProfile extends AppCompatActivity {
             String encoded = null;
             try {
                 bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.getContentResolver(),selectedImage));
-                img.setImageBitmap(bitmap);
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
@@ -185,6 +184,7 @@ public class UserProfile extends AppCompatActivity {
             }
 
             if (encoded.length() < 137000){
+                img.setImageBitmap(bitmap);
                 NetworkRequestHandler.setProfile(this, param, new ServerCallback() {
                     @Override
                     public void onSuccess(JSONObject response) {

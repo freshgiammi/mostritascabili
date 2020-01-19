@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
@@ -375,6 +376,8 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
         // logic to right before recreating the symbol map.
 
         symbolManager.removeClickListener(onSymbolClickListener);
+        final View coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        Snackbar.make(coordinatorLayout, "Candy eaten!", Snackbar.LENGTH_SHORT).show();
 
         NetworkRequestHandler.getMapObjects(MainActivity.this, sessionIdObject, new ServerCallback() {
             @Override
@@ -400,11 +403,11 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                                 switch (symbolData.getType()){
                                     case "CA":
                                         int  acquiredLp = response.getInt("lp") - ProfileModel.getInstance().getProfile().getLp();
-                                        Toast.makeText(getApplicationContext(), "Candy eaten! " +acquiredLp +" LP restored!"  , Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(coordinatorLayout, "Candy eaten! " +acquiredLp +" LP restored!" , Snackbar.LENGTH_SHORT).setAnchorView(R.id.centerCameraFAB).show();
                                         break;
                                     case "MO":
                                         if (response.getBoolean("died")) {
-                                            Toast.makeText(getApplicationContext(), "You're dead! Be careful next time. Starting over!", Toast.LENGTH_SHORT).show();
+                                            Snackbar.make(coordinatorLayout, "You're dead! Be careful next time. Starting over!", Snackbar.LENGTH_SHORT).setAnchorView(R.id.centerCameraFAB).show();
                                             // Reload activity
                                             Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
                                             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -412,7 +415,8 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                                         }
                                         else{
                                             int acquiredXp= response.getInt("xp") - ProfileModel.getInstance().getProfile().getXp();
-                                            Toast.makeText(getApplicationContext(), "Good fight! You acquired "+acquiredXp+" XP!", Toast.LENGTH_SHORT).show();
+                                            int lostLp = ProfileModel.getInstance().getProfile().getLp() - response.getInt("lp");
+                                            Snackbar.make(coordinatorLayout, "Good fight! You acquired "+acquiredXp+" XP and lost " +lostLp +" LP.", Snackbar.LENGTH_SHORT).setAnchorView(R.id.centerCameraFAB).show();
                                         }
                                         break;
                                 }

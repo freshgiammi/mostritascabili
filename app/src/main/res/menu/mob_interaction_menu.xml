@@ -3,18 +3,22 @@
     <group android:checkableBehavior="none">
         <item
             android:id="@+id/mob_name"
-            android:icon="@drawable/ic_person_outline_black_24dp"
+            android:icon="@drawable/ic_name"
             android:title="mob_name"
             android:enabled="false"/>
         <item
-            android:id="@+id/mob_type"
-            android:icon="@drawable/ic_insert_chart_black_24dp"
-            android:title="mob_type"
+            android:id="@+id/mob_lp"
+            android:icon="@drawable/ic_heart"
+            android:title="mob_lp"
             android:enabled="false"/>
-
+        <item
+            android:id="@+id/mob_xp"
+            android:icon="@drawable/ic_xp"
+            android:title="mob_xp"
+            android:enabled="false"/>
         <item
             android:id="@+id/mob_size"
-            android:icon="@drawable/ic_insert_chart_black_24dp"
+            android:icon="@drawable/ic_size"
             android:title="mob_size"
             android:enabled="false"/>
     </group>
