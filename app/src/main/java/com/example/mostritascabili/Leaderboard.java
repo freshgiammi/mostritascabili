@@ -14,7 +14,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//Todo: add a Top app bar with back button
 public class Leaderboard extends AppCompatActivity {
 
     @Override

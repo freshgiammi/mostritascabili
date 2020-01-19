@@ -28,6 +28,7 @@
         android:id="@+id/centerCameraFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:clickable="true"
         android:onClick="onClickCameraCenter"
         app:backgroundTint="@color/colorAccent"
@@ -36,7 +37,7 @@
         app:tint="@android:color/white"
         app:srcCompat="@drawable/ic_my_location_white_24dp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/hud"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +47,8 @@
 
         <RelativeLayout
             android:layout_width="100dp"
-            android:layout_height="100dp">
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true">
 
             <ProgressBar
                 android:id="@+id/user_lp"
@@ -96,7 +98,8 @@
 
         <RelativeLayout
             android:layout_width="100dp"
-            android:layout_height="100dp">
+            android:layout_height="100dp"
+            android:layout_alignParentRight="true">
 
             <ProgressBar
                 android:id="@+id/user_xp"
@@ -144,7 +147,7 @@
 
         </RelativeLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

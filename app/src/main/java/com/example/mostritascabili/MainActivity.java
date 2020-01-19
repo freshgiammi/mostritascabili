@@ -4,10 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.OnApplyWindowInsetsListener;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -464,7 +459,6 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
     public void onResume() {
         super.onResume();
         mapView.onResume();
-        //Todo: update symbols on map
         if (mapHandler != null)
             mapHandler.postDelayed(mapUpdater,updaterInterval);
     }

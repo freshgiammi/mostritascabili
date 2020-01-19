@@ -2,6 +2,8 @@ package com.example.mostritascabili;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
@@ -27,14 +29,18 @@ public class NetworkRequestHandler {
     //Check whether we have internet connection or not.
     //Todo: find out how to use ConnectivityManager.NetworkCallback
     public static boolean isConnected(Context context){
-      ConnectivityManager cm =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        final boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-
-        return isConnected;
+        Network[] networks = cm.getAllNetworks();
+        boolean hasInternet = false;
+        if(networks.length>0){
+            for(Network network :networks){
+                NetworkCapabilities nc = cm.getNetworkCapabilities(network);
+                if(nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
+                    hasInternet = true;
+            }
+        }
+        return hasInternet;
     }
 
     // Fetch Map Objects
