@@ -105,10 +105,11 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
         }
         name.setTitle(mapObject.getName());
         mobImg.setImageBitmap(img);
-         //if (enabled == false || ProfileModel.getInstance().getProfile().getLp() == 100) {
-           // button.setEnabled(false);
-            //button.setVisibility(View.GONE);
-        //} else {
+        //TODO: Hide button if user is trying to eat a candy with 100HP
+         if (enabled == false || mapObject.getType().equals("CA") && ProfileModel.getInstance().getProfile().getLp() == 100) {
+           button.setEnabled(false);
+           button.setVisibility(View.GONE);
+        } else {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -118,7 +119,7 @@ public class MobInteractionFragment extends BottomSheetDialogFragment {
                     dismiss(); // Closes sheet
                 }
             });
-       // }
+        }
         return view;
     }
 

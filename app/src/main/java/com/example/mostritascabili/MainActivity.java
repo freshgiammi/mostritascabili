@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                                 .withLatLng(new LatLng(obj.getLat(), obj.getLon()))
                                 .withIconImage(symbolIcon)
                                 .withIconSize(0.09f)
-                                .withData(MapObjectModel.getInstance().mapObjectJSON(obj)));
+                                .withData(MapObjectModel.getInstance().mapObjectJSON(obj))); //Insert MOB data as JsonElement for each symbol displayed
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
