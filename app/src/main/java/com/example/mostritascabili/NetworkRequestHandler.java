@@ -182,7 +182,7 @@ public class NetworkRequestHandler {
 
         JsonObjectRequest mapObject = new JsonObjectRequest(
                 Request.Method.POST,
-                "https://ewserver.di.unimi.it/mobicomp/mostri/fighteat.php",
+                "https://ewserver.di.unimi.it/mobicomp/mostri/fighteat2.php",
                 param,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -194,6 +194,31 @@ public class NetworkRequestHandler {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("NetworkRequestHandler", "fightEat Error: " + error.toString());
+                error.printStackTrace();
+            }
+        });
+        queue.add(mapObject);
+    }
+
+    // Get user history
+    public static void getHistory(Context context, final JSONObject param, final ServerCallback callback){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        Log.d("NetworkRequestHandler", "getHistory: Initialized");
+
+        JsonObjectRequest mapObject = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://ewserver.di.unimi.it/mobicomp/mostri/gethistory.php",
+                param,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("NetworkRequestHandler", "getHistory.php response: " + response.toString());
+                        callback.onSuccess(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("NetworkRequestHandler", "getHistory Error: " + error.toString());
                 error.printStackTrace();
             }
         });

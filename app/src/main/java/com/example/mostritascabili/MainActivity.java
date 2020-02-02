@@ -336,11 +336,13 @@ public class MainActivity extends AppCompatActivity implements Style.OnStyleLoad
                         mobLocation.setLongitude(symbolData.getLon());
                         float distanceInMeters = userLocation.distanceTo(mobLocation);
                         final Boolean enabled;
+                        /*
                         if (distanceInMeters > 50)
                             enabled = false;
                         else
                             enabled = true;
-
+                        */
+                            enabled = true;
                         NetworkRequestHandler.getObjectImg(MainActivity.this, param, new ServerCallback() {
                             @Override
                             public void onSuccess(JSONObject response) {
